@@ -13,11 +13,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stock.rest.client.model.Candle;
 import com.stock.rest.model.CandleDto;
 
+/**
+ * The Class StockUtil.
+ * 
+ * @author om kumar
+ */
 public class StockUtil {
 
+	/** The Constant MAPPER. */
 	private static final ObjectMapper MAPPER = new ObjectMapper()
 			.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
+	/**
+	 * Json to model.
+	 *
+	 * @param <T>      the generic type
+	 * @param basePath the base path
+	 * @param type     the type
+	 * @return the t
+	 */
 	public static <T> T jsonToModel(String basePath, Class<T> type) {
 		try {
 			File file = new ClassPathResource(basePath).getFile();
@@ -29,6 +43,12 @@ public class StockUtil {
 		return null;
 	}
 
+	/**
+	 * Dtos list to candle list.
+	 *
+	 * @param dtoList the dto list
+	 * @param candles the candles
+	 */
 	public static void dtosListToCandleList(List<CandleDto> dtoList, List<Candle> candles) {
 		AtomicInteger count = new AtomicInteger();
 		dtoList.stream().forEach(e -> {
