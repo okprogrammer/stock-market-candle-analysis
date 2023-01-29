@@ -2,7 +2,9 @@ package com.stock.service.impl;
 
 import static com.stock.constants.CandleConstants.CALENDER_FILE_PATH;
 import static com.stock.constants.CandleConstants.DOUBLE_QUOTES_STRING;
+import static com.stock.constants.CandleConstants.FILE_EMPTY;
 import static com.stock.constants.CandleConstants.INTEGER_FIVE;
+import static com.stock.constants.CandleConstants.NO_DATA_FOUND;
 import static com.stock.constants.CandleConstants.OPENING_RANGE_BREAKOUT_MSG;
 
 import java.util.ArrayList;
@@ -17,24 +19,42 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.stock.entity.CandleEntityList;
+import com.stock.exception.StockBadFormatException;
+import com.stock.exception.StockNotFoundException;
 import com.stock.rest.client.model.Candle;
 import com.stock.rest.model.CandleDto;
 import com.stock.rest.repository.CandleRepository;
 import com.stock.service.CandleService;
 import com.stock.util.StockUtil;
 
+/**
+ * The Class CandleServiceImpl.
+ * 
+ * @author om kumar
+ */
 @Service
 public class CandleServiceImpl implements CandleService {
 
+	/** The candle repository. */
 	@Autowired
 	private CandleRepository candleRepository;
 
+	/** The mapper. */
 	@Autowired
 	private ModelMapper mapper;
 
+	/**
+	 * Gets the opening range break out.
+	 *
+	 * @param time the time
+	 * @return the opening range break out
+	 */
 	@Override
 	public String getOpeningRangeBreakOut(int time) {
 		List<CandleDto> candleDtos = getStockCandles();
+		if (time % INTEGER_FIVE != 0) {
+			throw new StockBadFormatException("Input time is not a multiple of 5");
+		}
 		int n = time / INTEGER_FIVE;
 		List<Candle> resp = new ArrayList<>();
 		StockUtil.dtosListToCandleList(candleDtos, resp);
@@ -56,6 +76,12 @@ public class CandleServiceImpl implements CandleService {
 		return openingRangeBreakOut.toString();
 	}
 
+	/**
+	 * Gets the combine candles.
+	 *
+	 * @param time the time
+	 * @return the combine candles
+	 */
 	@Override
 	public List<Candle> getCombineCandles(int time) {
 		List<CandleDto> candleDtos = getStockCandles();
@@ -79,19 +105,33 @@ public class CandleServiceImpl implements CandleService {
 		return ans;
 	}
 
+	/**
+	 * Gets the stock candles.
+	 *
+	 * @return the stock candles
+	 */
 	@Override
 	public List<com.stock.rest.model.CandleDto> getStockCandles() {
 		loadData();
 		List<com.stock.entity.Candle> candles = candleRepository.findAll();
+		if (candles == null) {
+			throw new StockNotFoundException(NO_DATA_FOUND);
+		}
 		List<CandleDto> candleDtos = candles.stream().map(candle -> mapper.map(candle, CandleDto.class))
 				.sorted(Comparator.comparing(com.stock.rest.model.CandleDto::getLastTradeTime))
 				.collect(Collectors.toList());
 		return candleDtos;
 	}
 
+	/**
+	 * Load data.
+	 */
 	public void loadData() {
 		CandleEntityList candleEntityList = StockUtil.jsonToModel(CALENDER_FILE_PATH,
 				com.stock.entity.CandleEntityList.class);
+		if (candleEntityList == null) {
+			throw new StockNotFoundException(FILE_EMPTY);
+		}
 		List<com.stock.entity.Candle> candles = candleEntityList.getCandles().stream().collect(Collectors.toList());
 		candleRepository.saveAll(candles);
 	}
