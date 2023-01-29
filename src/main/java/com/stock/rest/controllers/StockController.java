@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stock.rest.model.CandleDto;
-import com.stock.rest.repository.CandleRepository;
 import com.stock.service.CandleService;
 
 @RestController
@@ -21,9 +20,6 @@ public class StockController {
 
 	@Autowired
 	private CandleService candleService;
-
-	@Autowired
-	private CandleRepository candleRepository;
 
 	@GetMapping("/stock/opening-break-out/{time}")
 	public ResponseEntity<String> getOpeningRangeBreakout(@PathVariable("time") Integer time) {
