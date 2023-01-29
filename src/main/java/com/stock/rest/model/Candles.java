@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class Candles {
+
+	/** The candles. */
 	@JsonProperty("candles")
 	private List<CandleDto> candles;
 
