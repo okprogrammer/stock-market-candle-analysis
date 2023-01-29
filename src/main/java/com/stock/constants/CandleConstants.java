@@ -25,4 +25,7 @@ public class CandleConstants {
 	/** The Constant FILE_EMPTY. */
 	public static final String FILE_EMPTY = "File is emtpy.";
 
+	/** The Constant INVALID_INPUT_VALUE. */
+	public static final String INVALID_INPUT_VALUE = "Input time is not a multiple of 5.";
+
 }
