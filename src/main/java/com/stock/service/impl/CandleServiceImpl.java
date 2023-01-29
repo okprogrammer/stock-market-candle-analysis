@@ -4,6 +4,7 @@ import static com.stock.constants.CandleConstants.CALENDER_FILE_PATH;
 import static com.stock.constants.CandleConstants.DOUBLE_QUOTES_STRING;
 import static com.stock.constants.CandleConstants.FILE_EMPTY;
 import static com.stock.constants.CandleConstants.INTEGER_FIVE;
+import static com.stock.constants.CandleConstants.INVALID_INPUT_VALUE;
 import static com.stock.constants.CandleConstants.NO_DATA_FOUND;
 import static com.stock.constants.CandleConstants.OPENING_RANGE_BREAKOUT_MSG;
 
@@ -53,7 +54,7 @@ public class CandleServiceImpl implements CandleService {
 	public String getOpeningRangeBreakOut(int time) {
 		List<CandleDto> candleDtos = getStockCandles();
 		if (time % INTEGER_FIVE != 0) {
-			throw new StockBadFormatException("Input time is not a multiple of 5");
+			throw new StockBadFormatException(INVALID_INPUT_VALUE);
 		}
 		int n = time / INTEGER_FIVE;
 		List<Candle> resp = new ArrayList<>();
@@ -86,7 +87,10 @@ public class CandleServiceImpl implements CandleService {
 	public List<Candle> getCombineCandles(int time) {
 		List<CandleDto> candleDtos = getStockCandles();
 		List<Candle> resp = new ArrayList<>();
-		int partitionVale = time / 5;
+		if (time % INTEGER_FIVE != 0) {
+			throw new StockBadFormatException(INVALID_INPUT_VALUE);
+		}
+		int partitionVale = time / INTEGER_FIVE;
 		StockUtil.dtosListToCandleList(candleDtos, resp);
 		List<List<Candle>> partitionCandles = ListUtils.partition(resp, partitionVale);
 		List<Candle> ans = new ArrayList<>();
