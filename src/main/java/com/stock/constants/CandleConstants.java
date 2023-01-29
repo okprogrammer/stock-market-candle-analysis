@@ -3,7 +3,7 @@ package com.stock.constants;
 /**
  * The Class CandleConstants.
  *
- * @author omkumar
+ * @author om kumar
  */
 public class CandleConstants {
 
@@ -18,5 +18,11 @@ public class CandleConstants {
 
 	/** The Constant DOUBLE_QUOTES_STRING. */
 	public static final String DOUBLE_QUOTES_STRING = "\"";
+
+	/** The Constant NO_DATA_FOUND. */
+	public static final String NO_DATA_FOUND = "No Data Found in H2 Databse.";
+
+	/** The Constant FILE_EMPTY. */
+	public static final String FILE_EMPTY = "File is emtpy.";
 
 }
