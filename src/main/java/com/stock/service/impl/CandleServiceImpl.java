@@ -4,7 +4,6 @@ import static com.stock.constants.CandleConstants.CALENDER_FILE_PATH;
 import static com.stock.constants.CandleConstants.DOUBLE_QUOTES_STRING;
 import static com.stock.constants.CandleConstants.FILE_EMPTY;
 import static com.stock.constants.CandleConstants.INTEGER_FIVE;
-import static com.stock.constants.CandleConstants.INVALID_INPUT_VALUE;
 import static com.stock.constants.CandleConstants.NO_DATA_FOUND;
 import static com.stock.constants.CandleConstants.OPENING_RANGE_BREAKOUT_MSG;
 
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.stock.entity.CandleEntityList;
-import com.stock.exception.StockBadFormatException;
 import com.stock.exception.StockNotFoundException;
 import com.stock.rest.client.model.Candle;
 import com.stock.rest.model.CandleDto;
@@ -53,9 +51,6 @@ public class CandleServiceImpl implements CandleService {
 	@Override
 	public String getOpeningRangeBreakOut(int time) {
 		List<CandleDto> candleDtos = getStockCandles();
-		if (time % INTEGER_FIVE != 0) {
-			throw new StockBadFormatException(INVALID_INPUT_VALUE);
-		}
 		int n = time / INTEGER_FIVE;
 		List<Candle> resp = new ArrayList<>();
 		StockUtil.dtosListToCandleList(candleDtos, resp);
@@ -87,9 +82,6 @@ public class CandleServiceImpl implements CandleService {
 	public List<Candle> getCombineCandles(int time) {
 		List<CandleDto> candleDtos = getStockCandles();
 		List<Candle> resp = new ArrayList<>();
-		if (time % INTEGER_FIVE != 0) {
-			throw new StockBadFormatException(INVALID_INPUT_VALUE);
-		}
 		int partitionVale = time / INTEGER_FIVE;
 		StockUtil.dtosListToCandleList(candleDtos, resp);
 		List<List<Candle>> partitionCandles = ListUtils.partition(resp, partitionVale);

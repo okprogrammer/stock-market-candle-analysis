@@ -1,5 +1,8 @@
 package com.stock.rest.controllers;
 
+import static com.stock.constants.CandleConstants.INTEGER_FIVE;
+import static com.stock.constants.CandleConstants.INVALID_INPUT_VALUE;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.stock.exception.StockBadFormatException;
 import com.stock.rest.model.CandleDto;
 import com.stock.service.CandleService;
 
@@ -35,6 +39,9 @@ public class StockController {
 	 */
 	@GetMapping("/stock/opening-break-out/{time}")
 	public ResponseEntity<String> getOpeningRangeBreakout(@PathVariable("time") Integer time) {
+		if (time % INTEGER_FIVE != 0) {
+			throw new StockBadFormatException(INVALID_INPUT_VALUE);
+		}
 		String openingRangeBreakOut = candleService.getOpeningRangeBreakOut(time);
 		return new ResponseEntity<>(openingRangeBreakOut, HttpStatus.OK);
 	}
@@ -48,6 +55,9 @@ public class StockController {
 	@GetMapping("/stock/get-combine-candles/{time}")
 	public ResponseEntity<List<com.stock.rest.client.model.Candle>> getCombinesCandles(
 			@PathVariable("time") Integer time) {
+		if (time % INTEGER_FIVE != 0) {
+			throw new StockBadFormatException(INVALID_INPUT_VALUE);
+		}
 		List<com.stock.rest.client.model.Candle> combineCandles = candleService.getCombineCandles(time);
 		return new ResponseEntity<>(combineCandles, HttpStatus.OK);
 	}
